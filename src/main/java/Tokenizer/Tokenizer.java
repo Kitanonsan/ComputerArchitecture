@@ -7,13 +7,11 @@ import java.util.StringTokenizer;
 public class Tokenizer {
     private StringTokenizer tkz;
     private Queue<String> queue;
-
     public Tokenizer(String src){
         tkz = new StringTokenizer(src);
         queue = new LinkedList<>();
         this.tokenize();
     }
-
     private void tokenize(){
         String s = tkz.nextToken();
         if(s.matches(Format.Field) && !s.matches(Format.Instruction)){
@@ -53,7 +51,6 @@ public class Tokenizer {
             queue.add(number);
         }
     }
-
     public String next(){
         return queue.poll();
     }
