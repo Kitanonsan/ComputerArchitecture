@@ -1,37 +1,22 @@
 package Tokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import java.util.StringTokenizer;
 
 public class Tokenizer {
-    private String src;
-    private String next;
 
-    int pos;
+    private StringTokenizer tkz;
+    private int pos;
 
     public Tokenizer(String src){
-        this.src = src;
+        tkz = new StringTokenizer(src);
 
     }
 
-    public boolean hasNextToken(){
-        return next != null;
-    }
-
-//    public String peek(){
+//    private String tokenize(){
 //
 //    }
 //
-//    public String consume(){
+//    public String next(){
 //
 //    }
-//
-//    public void computeNext(){
-//
-//    }
-//
-//    public boolean peek(String regex){
-//
-//    }
-//
-//    public void consume()
 }
