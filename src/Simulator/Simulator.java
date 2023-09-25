@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class InstructionLevelSimulator {
+public class Main {
     private static final int NUMMEMORY = 65536; // maximum number of words in memory
     private static final int NUMREGS = 8;      // number of machine registers
     private static final int MAXLINELENGTH = 1000;
@@ -30,6 +30,7 @@ public class InstructionLevelSimulator {
         String fileName = args[0];
         State state = new State();
 
+
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = fileReader.readLine()) != null) {
@@ -37,8 +38,13 @@ public class InstructionLevelSimulator {
                     System.err.println("error: memory is full");
                     System.exit(1);
                 }
-                state.mem[state.numMemory] = Integer.parseInt(line);
-                System.out.println("memory[" + state.numMemory + "]=" + state.mem[state.numMemory]);
+                int decimalValue = Integer.parseInt(line);
+                String binaryValue = toTwosComplementBinary(decimalValue);
+                int opcode = extractOpcode(binaryValue);
+                String opcodeBinary = String.format("%03d", Integer.parseInt(Integer.toBinaryString(opcode))); // Extend opcode to 3 bits
+//                System.out.println("memory[" + state.numMemory + "]=" + binaryValue);
+                System.out.println("Opcode: " + opcodeBinary);
+                state.mem[state.numMemory] = Integer.parseInt(binaryValue, 2);
                 state.numMemory++;
             }
         } catch (IOException e) {
@@ -46,6 +52,46 @@ public class InstructionLevelSimulator {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    static int extractOpcode(String binaryValue) {
+        // Shift right 22 bits and perform a bitwise AND with 0b111 to extract opcode.
+        int opcode = (Integer.parseInt(binaryValue, 2) >> 22) & 0b111;
+        return opcode;
+    }
+
+    static String toTwosComplementBinary(int value) {
+        String binary = Integer.toBinaryString(value);
+        int length = binary.length();
+
+        // Pad with leading 0s to get a fixed-length representation
+        while (length < 32) {
+            binary = "0" + binary;
+            length++;
+        }
+
+        // If the original value was positive, return the binary representation as is
+        if (value >= 0) {
+            return binary;
+        }
+
+        // For negative values, calculate two's complement
+        StringBuilder complement = new StringBuilder();
+        boolean foundOne = false;
+
+        for (int i = binary.length() - 1; i >= 0; i--) {
+            char bit = binary.charAt(i);
+            if (!foundOne) {
+                complement.insert(0, bit);
+            } else {
+                complement.insert(0, bit == '0' ? '1' : '0');
+            }
+            if (bit == '1') {
+                foundOne = true;
+            }
+        }
+
+        return complement.toString();
     }
 
     static void printState(State state) {
