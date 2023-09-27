@@ -1,23 +1,40 @@
 package Assembler;
 
 import Tokenizer.Format;
+import Tokenizer.Tokenizer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Assembler {
     private HashMap<String,Integer> hashMap;
-
     private List instruction;
-
     private List machine_code;
-
-    public Assembler(List instruction){
+    public Assembler(){
+        File myObj = new File("src/Program/Program1.txt");
+        Scanner myReader = null;
+        try {
+            myReader = new Scanner(myObj);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        List<String> Instruction = new ArrayList<String>();
+        while (myReader.hasNextLine()) {
+            String data = myReader.nextLine();
+            StringBuilder strBuild = new StringBuilder();
+            Tokenizer tkz = new Tokenizer(data);
+            while (tkz.hasNext()) {
+                strBuild.append(tkz.next() + " ");
+            }
+            Instruction.add(strBuild.toString());
+        }
        hashMap = new HashMap();
-       this.instruction = instruction;
+       this.instruction = Instruction;
        LabelMapping();
     }
 
-    public void LabelMapping(){
+    private void LabelMapping(){
         for(int i = 0 ; i< instruction.size();i++){
             String data = (String) instruction.get(i);
             StringTokenizer tkz =  new StringTokenizer(data);
@@ -25,25 +42,33 @@ public class Assembler {
             String LabelMap = s;
             if(s.matches(Format.Label) && tkz.hasMoreTokens()){
                 s = tkz.nextToken();
-                if(s.matches(Format.Opcode)){
-                    hashMap.put(LabelMap,i);
-                }
-                if(s.matches(Format.Fill)){
-                    s = tkz.nextToken();
-                    if(s.matches(Format.Numeric)){
-                        hashMap.put(LabelMap,Integer.parseInt(s));
-                    }else{
-                       if(hashMap.containsKey(s)){
-                           //System.out.println("same label in Loop1 in address ["+i+"]");
-                       }
+                if(!hashMap.containsKey(LabelMap)){
+                    if(s.matches(Format.Opcode)){
+                        hashMap.put(LabelMap,i);
                     }
+                    if(s.matches(Format.Fill)){
+                        s = tkz.nextToken();
+                        if(s.matches(Format.Numeric)){
+                            hashMap.put(LabelMap,Integer.parseInt(s));
+                        }
+                        else if(s.matches(Format.Label)){
+                            if(hashMap.containsKey(s)){
+                                hashMap.put(LabelMap,hashMap.get(s));
+                            }
+                            else{
+                                System.out.println("Don't know this label: " +s );
+                            }
+                        }
+                    }
+                }else{
+                    System.out.println("Same label at Line: " + i);
                 }
             }
         }
         Loop2();
     }
 
-    public void Loop2(){
+    private void Loop2(){
         for(int i = 0 ; i< instruction.size();i++){
             String data = (String) instruction.get(i);
             StringTokenizer tkz =  new StringTokenizer(data);
