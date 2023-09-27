@@ -9,6 +9,8 @@ public class Assembler {
 
     private List instruction;
 
+    private List machine_code;
+
     public Assembler(List instruction){
        hashMap = new HashMap();
        this.instruction = instruction;
@@ -78,4 +80,12 @@ public class Assembler {
 //        map.put(arrStr[0],arrStr[2]);
 //        System.out.println(map);
 //    }
+    private void MachineCode(){
+        for(int i = 0; i < instruction.size(); i++){
+
+        }
+    }
+    private String twoComplement(){
+        return "";
+    }
 }
