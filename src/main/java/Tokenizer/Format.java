@@ -1,15 +1,20 @@
 package Tokenizer;
-import  java.util.regex.Pattern;
 
 public class Format {
     public static String Label = "[a-zA-Z]\\w{0,5}";
-    public static String Field = "[0-7]|[a-zA-Z]\\w{0,5}";
+    public static String Field = "[0-7]|([a-zA-Z]\\w{0,5})";
     public static String Numeric = "-?[0-9]+";
-    public static String Symbolic = "[0-7]|[a-zA-Z]\\w{0,5}";
-    public static String Instruction = "add|nand|lw|sw|beq|jalr|halt|noop";
+    public static String Symbolic = "[a-zA-Z]\\w{0,5}";
+    public static String Opcode = "add|nand|lw|sw|beq|jalr|halt|noop";
     public static String R_Type = "add|nand";
     public static String I_type = "lw|sw|beq";
     public static String J_type = "jalr";
     public static String O_type = "halt|noop";
     public static String Fill = ".fill";
+    public static String InstructionFormat = "([a-zA-Z]\\w{0,5}\s)?(add|nand|lw|sw|beq|jalr|halt|noop)(\s[0-7]|([a-zA-Z]\\w{0,5})){0,3}(\s.*)*";
+    public static String R_format = "([a-zA-Z]\\w{0,5}\s)?(add|nand)(\s[0-7]){3,3}(\s.*)*";
+    public static String I_format = "([a-zA-Z]\\w{0,5}\s)?(lw|sw|beq)(\s[0-7]){2,2}((-?[0-9]+)|([a-zA-Z]\\w{0,5}))(\s.*)*";
+    public static String J_format = "([a-zA-Z]\\w{0,5}\s)?(jalr)(\s[0-7]){2,2}(\s.*)*";
+    public static String O_format = "([a-zA-Z]\\w{0,5}\s)?(halt|noop)(\s.*)*";
+
 }

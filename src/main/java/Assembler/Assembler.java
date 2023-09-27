@@ -23,7 +23,7 @@ public class Assembler {
             String LabelMap = s;
             if(s.matches(Format.Label) && tkz.hasMoreTokens()){
                 s = tkz.nextToken();
-                if(s.matches(Format.Instruction)){
+                if(s.matches(Format.Opcode)){
                     hashMap.put(LabelMap,i);
                 }
                 if(s.matches(Format.Fill)){

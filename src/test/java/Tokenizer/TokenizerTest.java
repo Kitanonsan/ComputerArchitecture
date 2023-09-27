@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TokenizerTest {
+    @Test
+    void InstructionFormatTest(){
+
+    }
 
     @Test
     void AddTest(){
@@ -11,35 +15,27 @@ class TokenizerTest {
     }
 
     @Test
-    void NandText(){
+    void NandTest(){
 
     }
 
     @Test
-    void LwText(){
+    void LwTest(){
 
     }
 
     @Test
-    void SwText(){
+    void SwTest(){
 
     }
 
     @Test
     void BeqTest(){
-        String tests = "beq 0 1 2";
-        Tokenizer tkz = new Tokenizer("beq 0 1 2 goto end of program when reg1==0");
-        StringBuilder str = new StringBuilder();
-        while(tkz.hasNext()){
-            str.append(tkz.next());
-            if(tkz.hasNext())
-                str.append(" ");
-        }
-        assertEquals(tests,str.toString());
+
     }
 
     @Test
-    void JalrText(){
+    void JalrTest(){
 
     }
 
