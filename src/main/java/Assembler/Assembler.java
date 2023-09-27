@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Assembler {
     private HashMap<String,Integer> hashMap;
-    private List instruction;
+    private List<String> instruction;
     private List machine_code;
     public Assembler(){
         File myObj = new File("src/Program/Program1.txt");
@@ -104,12 +104,28 @@ public class Assembler {
 //        map.put(arrStr[0],arrStr[2]);
 //        System.out.println(map);
 //    }
-    private void MachineCode(){
+    public void MachineCode(){
         for(int i = 0; i < instruction.size(); i++){
+            Tokenizer tkz = new Tokenizer(instruction.get(i));
+            StringBuilder binary = new StringBuilder();
+            binary.append("0000000");
+            if(instruction.get(i).matches(Format.R_format)){
 
+            }
+            else if(instruction.get(i).matches(Format.I_format)){
+
+            }
+            else if(instruction.get(i).matches(Format.J_format)){
+
+            }
+            else if(instruction.get(i).matches(Format.O_format)){
+
+            }
+            else if(instruction.get(i).matches(Format.Fill_format)){
+
+            }
         }
     }
-
     public static String twoComplement(String number){
         int n = Integer.parseInt(number);
         if(-32768 <= n && n <= 32767){
@@ -137,5 +153,36 @@ public class Assembler {
         else{
             throw new ArithmeticException("too many");
         }
+    }
+
+    public static String regNumber(String number){
+        String s = "";
+        switch (number){
+            case"0":
+                s = "000";
+                break;
+            case "1":
+                s = "001";
+                break;
+            case "2":
+                s = "010";
+                break;
+            case "3":
+                s = "011";
+                break;
+            case "4":
+                s = "100";
+                break;
+            case "5":
+                s = "101";
+                break;
+            case "6":
+                s = "110";
+                break;
+            case "7":
+                s = "111";
+                break;
+        }
+        return s;
     }
 }
