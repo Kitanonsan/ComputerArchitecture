@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class TokenizerTest {
     @Test
     void InstructionFormatTest(){
+        String s = "five .fill 5 asdfasdfasd asdfasd asdfasdf ";
+        assertTrue(s.matches(Format.Fill_format));
 
     }
 
