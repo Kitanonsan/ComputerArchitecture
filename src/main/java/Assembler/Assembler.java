@@ -65,7 +65,6 @@ public class Assembler {
                 }
             }
         }
-        Loop2();
     }
 
     private void Loop2(){
