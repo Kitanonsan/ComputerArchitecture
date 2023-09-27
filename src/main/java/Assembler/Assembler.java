@@ -85,7 +85,33 @@ public class Assembler {
 
         }
     }
-    private String twoComplement(){
-        return "";
+
+    public static String twoComplement(String number){
+        int n = Integer.parseInt(number);
+        if(-32768 <= n && n <= 32767){
+            String twoComplement;
+            StringBuilder str;
+            String result;
+            if(n < 0){
+                n = -1*n;
+                twoComplement = Integer.toBinaryString(((~n)+1));
+                str = new StringBuilder(twoComplement);
+                result =str.substring(str.length()-16,str.length());
+            }
+            else {
+                twoComplement =  Integer.toBinaryString(n);
+                str = new StringBuilder(twoComplement);
+                StringBuilder extend = new StringBuilder();
+                while(str.length() + extend.length() < 16){
+                    extend.append("0");
+                }
+
+                result = extend.append(str).toString();
+            }
+            return result;
+        }
+        else{
+            throw new ArithmeticException("too many");
+        }
     }
 }

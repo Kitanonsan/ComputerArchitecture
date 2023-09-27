@@ -57,7 +57,7 @@ public class Tokenizer {
         }
 
     }
-    public boolean FormatCheck(String s){
+    public static boolean FormatCheck(String s){
        return  s.matches(Format.Fill_format) || (s.matches(Format.InstructionFormat) && (s.matches(Format.R_format) || s.matches(Format.I_format) || s.matches(Format.J_format) || s.matches(Format.O_format)));
     }
     public String next(){

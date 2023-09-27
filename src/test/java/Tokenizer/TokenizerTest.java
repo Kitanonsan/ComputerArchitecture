@@ -6,19 +6,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class TokenizerTest {
     @Test
     void InstructionFormatTest(){
-        String s = "five .fill 5 asdfasdfasd asdfasd asdfasdf ";
-        assertTrue(s.matches(Format.Fill_format));
+            String s = "start2 start2 add 1 2 3 45";
+            assertTrue(s.matches(Format.InstructionFormat));
 
     }
 
     @Test
     void AddTest(){
-
+            String s = "add add 4 3 2";
+            assertTrue(Tokenizer.FormatCheck(s));
     }
 
     @Test
     void NandTest(){
-
+        int j = 3;
+        System.out.println(Integer.toBinaryString((~j)+1));
     }
 
     @Test
@@ -28,7 +30,8 @@ class TokenizerTest {
 
     @Test
     void SwTest(){
-
+        String s = "FF .fill 5 alsk;djf;l asdfasd";
+        assertTrue(s.matches(Format.Fill_format));
     }
 
     @Test
