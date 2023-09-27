@@ -12,10 +12,10 @@ public class Assembler {
     public Assembler(List instruction){
        hashMap = new HashMap();
        this.instruction = instruction;
-       Loop1();
+       LabelMapping();
     }
 
-    public void Loop1(){
+    public void LabelMapping(){
         for(int i = 0 ; i< instruction.size();i++){
             String data = (String) instruction.get(i);
             StringTokenizer tkz =  new StringTokenizer(data);
