@@ -10,7 +10,7 @@ import java.util.*;
 public class Assembler {
     private HashMap<String,Integer> hashMap;
     private List<String> instruction;
-    private List machine_code;
+    private List<String> machine_code;
     public Assembler(){
         File myObj = new File("src/Program/Program1.txt");
         Scanner myReader = null;
@@ -19,7 +19,7 @@ public class Assembler {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        List<String> Instruction = new ArrayList<String>();
+        instruction = new ArrayList<String>();
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
             StringBuilder strBuild = new StringBuilder();
@@ -27,11 +27,13 @@ public class Assembler {
             while (tkz.hasNext()) {
                 strBuild.append(tkz.next() + " ");
             }
-            Instruction.add(strBuild.toString());
+            instruction.add(strBuild.toString());
         }
        hashMap = new HashMap();
-       this.instruction = Instruction;
+       machine_code = new ArrayList<>();
        LabelMapping();
+       MachineCode();
+       printMachineCode();
     }
 
     private void LabelMapping(){
@@ -104,29 +106,94 @@ public class Assembler {
 //        map.put(arrStr[0],arrStr[2]);
 //        System.out.println(map);
 //    }
-    public void MachineCode(){
+    private void MachineCode(){
         for(int i = 0; i < instruction.size(); i++){
             Tokenizer tkz = new Tokenizer(instruction.get(i));
             StringBuilder binary = new StringBuilder();
             binary.append("0000000");
             if(instruction.get(i).matches(Format.R_format)){
-
+                String opcode = tkz.next();
+                if(opcode.matches(Format.Label) && !opcode.matches(Format.Opcode)){
+                    opcode = tkz.next();
+                }
+                if(opcode .matches("add")){
+                    binary.append("000");
+                }
+                else if(opcode .matches("nand")){
+                    binary.append("001");
+                }
+                String regA = tkz.next();
+                String regB = tkz.next();
+                String destReg = tkz.next();
+                binary.append(regNumber(regA));
+                binary.append(regNumber(regB));
+                binary.append("0000000000000");
+                binary.append(regNumber(destReg));
             }
             else if(instruction.get(i).matches(Format.I_format)){
-
+                String opcode = tkz.next();
+                if(opcode.matches(Format.Label) && !opcode.matches(Format.Opcode)){
+                    opcode = tkz.next();
+                }
+                if(opcode .matches("lw")){
+                    binary.append("010");
+                }
+                else if(opcode .matches("sw")){
+                    binary.append("011");
+                }
+                else if(opcode.matches("beq")){
+                    binary.append("100");
+                }
+                String regA = tkz.next();
+                String regB = tkz.next();
+                String offsetField = tkz.next();
+                if(offsetField.matches(Format.Label)){
+                    offsetField = hashMap.get(offsetField).toString();
+                    int jumpValue = Integer.parseInt(offsetField) -i;
+                    offsetField = Integer.toString(jumpValue);
+                }
+                binary.append(regNumber(regA));
+                binary.append(regNumber(regB));
+                binary.append(twoComplement(offsetField));
             }
             else if(instruction.get(i).matches(Format.J_format)){
-
+                String opcode = tkz.next();
+                if(opcode.matches(Format.Label) && !opcode.matches(Format.Opcode)){
+                    opcode = tkz.next();
+                }
+                binary.append("101");
+                String regA = tkz.next();
+                String regB = tkz.next();
+                binary.append(regNumber(regA));
+                binary.append(regNumber(regB));
+                binary.append("0000000000000000");
             }
             else if(instruction.get(i).matches(Format.O_format)){
-
+                String opcode = tkz.next();
+                if(opcode.matches(Format.Label) && !opcode.matches(Format.Opcode)){
+                    opcode = tkz.next();
+                }
+                if(opcode.matches("halt")){
+                    binary.append("110");
+                }
+                else if(opcode.matches("noop")){
+                    binary.append("111");
+                }
+                binary.append("0000000000000000000000");
             }
             else if(instruction.get(i).matches(Format.Fill_format)){
-
+                tkz.next();
+                tkz.next();
+                String number = tkz.next();
+                if(number.matches(Format.Label)){
+                    number = hashMap.get(number).toString();
+                }
+                binary.append(twoComplement(number));
             }
+            machine_code.add(binary.toString());
         }
     }
-    public static String twoComplement(String number){
+    private static String twoComplement(String number){
         int n = Integer.parseInt(number);
         if(-32768 <= n && n <= 32767){
             String twoComplement;
@@ -155,7 +222,7 @@ public class Assembler {
         }
     }
 
-    public static String regNumber(String number){
+    private static String regNumber(String number){
         String s = "";
         switch (number){
             case"0":
@@ -184,5 +251,10 @@ public class Assembler {
                 break;
         }
         return s;
+    }
+
+    private void printMachineCode(){
+        for(int i = 0 ; i < machine_code.size(); i++)
+            System.out.println(machine_code.get(i));
     }
 }
