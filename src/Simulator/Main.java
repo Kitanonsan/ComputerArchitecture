@@ -42,7 +42,7 @@ public class Main {
                 String binaryValue = toTwosComplementBinary(decimalValue);
                 int opcode = extractOpcode(binaryValue);
                 String opcodeBinary = String.format("%03d", Integer.parseInt(Integer.toBinaryString(opcode))); // Extend opcode to 3 bits
-//                System.out.println("memory[" + state.numMemory + "]=" + binaryValue);
+                // System.out.println("memory[" + state.numMemory + "]=" + binaryValue);
                 System.out.println("Opcode: " + opcodeBinary);
                 state.mem[state.numMemory] = Integer.parseInt(binaryValue, 2);
                 state.numMemory++;
@@ -94,6 +94,8 @@ public class Main {
         return complement.toString();
     }
 
+
+
     static void printState(State state) {
         System.out.println("\n@@@\nstate:");
         System.out.println("\tpc " + state.pc);
@@ -108,3 +110,4 @@ public class Main {
         System.out.println("end state");
     }
 }
+
