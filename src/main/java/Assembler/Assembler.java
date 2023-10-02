@@ -34,6 +34,7 @@ public class Assembler {
        LabelMapping();
        MachineCode();
        printMachineCode();
+       BinarytoDecimal();
     }
 
     private void LabelMapping(){
@@ -147,10 +148,13 @@ public class Assembler {
                 String regA = tkz.next();
                 String regB = tkz.next();
                 String offsetField = tkz.next();
-                if(offsetField.matches(Format.Label)){
+                if(offsetField.matches(Format.Label) && (opcode.matches("beq"))){
                     offsetField = hashMap.get(offsetField).toString();
-                    int jumpValue = Integer.parseInt(offsetField) -i;
+                    int jumpValue = Integer.parseInt(offsetField)-(i+1);
                     offsetField = Integer.toString(jumpValue);
+                }
+                else if(offsetField.matches(Format.Label) && (opcode.matches("lw|sw"))){
+                    offsetField = hashMap.get(offsetField).toString();
                 }
                 binary.append(regNumber(regA));
                 binary.append(regNumber(regB));
@@ -256,5 +260,11 @@ public class Assembler {
     private void printMachineCode(){
         for(int i = 0 ; i < machine_code.size(); i++)
             System.out.println(machine_code.get(i));
+    }
+
+    private void BinarytoDecimal(){
+        for(int  i = 0 ; i < machine_code.size(); i++){
+            System.out.println(Integer.parseInt(machine_code.get(i),2));
+        }
     }
 }
