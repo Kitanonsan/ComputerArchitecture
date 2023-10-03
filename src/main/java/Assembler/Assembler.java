@@ -3,12 +3,12 @@ package Assembler;
 import Tokenizer.Format;
 import Tokenizer.Tokenizer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 
 public class Assembler {
     private HashMap<String,Integer> hashMap;
+    private HashMap<String,Integer> hmLine;
     private List<String> instruction;
     private List<String> machine_code;
     public Assembler(){
@@ -30,11 +30,25 @@ public class Assembler {
             instruction.add(strBuild.toString());
         }
        hashMap = new HashMap();
+        hmLine = new HashMap();
        machine_code = new ArrayList<>();
        LabelMapping();
        MachineCode();
        printMachineCode();
        BinarytoDecimal();
+       try {
+           File fileout = new File("DecimalCode.txt");
+           FileOutputStream fos = new FileOutputStream(fileout);
+           BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
+           for(int  i = 0 ; i < machine_code.size(); i++){
+               String Decimal = String.valueOf(Integer.parseInt(machine_code.get(i),2));
+               writer.write(Decimal);
+               writer.newLine();
+           }
+           writer.close();
+       }catch (IOException e){
+           e.printStackTrace();
+       }
     }
 
     private void LabelMapping(){
@@ -47,16 +61,18 @@ public class Assembler {
                 s = tkz.nextToken();
                 if(!hashMap.containsKey(LabelMap)){
                     if(s.matches(Format.Opcode)){
-                        hashMap.put(LabelMap,i);
+                        //hashMap.put(LabelMap,i);
+                        hmLine.put(LabelMap,i);
                     }
                     if(s.matches(Format.Fill)){
                         s = tkz.nextToken();
+                        hmLine.put(LabelMap,i);
                         if(s.matches(Format.Numeric)){
                             hashMap.put(LabelMap,Integer.parseInt(s));
                         }
                         else if(s.matches(Format.Label)){
-                            if(hashMap.containsKey(s)){
-                                hashMap.put(LabelMap,hashMap.get(s));
+                            if(hmLine.containsKey(s)){
+                                hashMap.put(LabelMap,hmLine.get(s));
                             }
                             else{
                                 System.out.println("Don't know this label: " +s );
@@ -68,6 +84,7 @@ public class Assembler {
                 }
             }
         }
+        //printHashMap();
     }
 
     private void Loop2(){
@@ -89,24 +106,13 @@ public class Assembler {
     }
     public void printHashMap(){
         System.out.println(hashMap.keySet() + " -- " + hashMap.values());
+        System.out.println(hmLine.keySet() + " -- " + hmLine.values());
     }
 
     public void printInstruction(){
         System.out.println(instruction);
     }
 
-//    public void FindFill (){
-//        String[] arrStr = s.split(" ");
-//        for(String x : arrStr){
-//            if(x.matches(Format.Fill)){
-//                FillNum(arrStr);
-//            }
-//        }
-//    }
-//    public void FillNum(String[] arrStr){
-//        map.put(arrStr[0],arrStr[2]);
-//        System.out.println(map);
-//    }
     private void MachineCode(){
         for(int i = 0; i < instruction.size(); i++){
             Tokenizer tkz = new Tokenizer(instruction.get(i));
@@ -149,7 +155,11 @@ public class Assembler {
                 String regB = tkz.next();
                 String offsetField = tkz.next();
                 if(offsetField.matches(Format.Label) && (opcode.matches("beq"))){
-                    offsetField = hashMap.get(offsetField).toString();
+                    if(hashMap.containsKey(offsetField)){
+                        offsetField = hashMap.get(offsetField).toString();
+                    }else {
+                        offsetField = hmLine.get(offsetField).toString();
+                    }
                     int jumpValue = Integer.parseInt(offsetField)-(i+1);
                     offsetField = Integer.toString(jumpValue);
                 }
@@ -190,7 +200,7 @@ public class Assembler {
                 tkz.next();
                 String number = tkz.next();
                 if(number.matches(Format.Label)){
-                    number = hashMap.get(number).toString();
+                    number = hmLine.get(number).toString();
                 }
                 binary.append(twoComplement(number));
             }
