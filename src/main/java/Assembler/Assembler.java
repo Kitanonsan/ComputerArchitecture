@@ -164,7 +164,7 @@ public class Assembler {
                     offsetField = Integer.toString(jumpValue);
                 }
                 else if(offsetField.matches(Format.Label) && (opcode.matches("lw|sw"))){
-                    offsetField = hashMap.get(offsetField).toString();
+                    offsetField = hmLine.get(offsetField).toString();
                 }
                 binary.append(regNumber(regA));
                 binary.append(regNumber(regB));
