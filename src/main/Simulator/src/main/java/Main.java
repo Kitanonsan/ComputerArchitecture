@@ -59,6 +59,162 @@ public class Main {
         }
 
 
+        int sum=0;
+        while (true) {
+
+            // Print the current state before executing each instruction
+            printState(state);
+
+            // Fetch the current instruction from memory
+            int intValue = state.mem[state.pc];
+//            System.out.println("\n"+intValue);
+            String binaryValue = toTwosComplementBinary(intValue);
+//            System.out.println(binaryValue);
+            int opcode = extractOpcode(binaryValue);
+//            System.out.println(opcode);
+            String opcodeBinary = String.format("%03d", Integer.parseInt(Integer.toBinaryString(opcode)));
+//            System.out.println(opcodeBinary);
+            int regA,regB,destReg,offsetField;
+            int memoryAddress;
+            switch (opcodeBinary) {
+                case "000" -> { // add
+
+                    //string cutting
+                    regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
+                    regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
+                    destReg = Integer.parseInt(binaryValue.substring(29, 32), 2);
+
+                    // Execute add instruction logic
+                    state.reg[destReg] = state.reg[regA] + state.reg[regB];
+                    state.pc++;
+                    sum++;
+                }
+                case "001" -> { // nand
+                    //string cutting
+                    regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
+                    regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
+                    destReg = Integer.parseInt(binaryValue.substring(29, 32), 2);
+
+                    // Execute nand instruction logic
+                    state.reg[destReg] = ~(state.reg[regA] & state.reg[regB]);
+                    // Increment the program counter
+                    state.pc++;
+                    sum++;
+                }
+                case "010" -> { // lw
+                    // Extract the necessary values from the instruction
+
+                    regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
+
+                    regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
+
+                    offsetField = Integer.parseInt(binaryValue.substring(16, 32), 2);
+                    offsetField = convertNum(offsetField);
+
+
+                    // Calculate the memory address by adding offsetField to regA
+                    memoryAddress = state.reg[regA] + offsetField;
+                    // Check if memoryAddress is within bounds
+                    if (memoryAddress < 0 || memoryAddress >= NUMMEMORY) {
+                        System.err.println("ERROR: Invalid memory address");
+                        System.exit(1);
+                    }
+
+                    // Load the value from memory into regB
+                    state.reg[regB] = state.mem[memoryAddress];
+
+                    // Increment the program counter
+                    state.pc++;
+                    sum++;
+                }
+                case "011" -> { // sw
+                    //string cutting
+                    regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
+
+                    regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
+
+                    offsetField = Integer.parseInt(binaryValue.substring(16, 32), 2);
+                    offsetField = convertNum(offsetField);
+
+
+                    // Calculate the memory address by adding offsetField to regA
+                    memoryAddress = state.reg[regA] + offsetField;
+                    // Check if memoryAddress is within bounds
+                    if (memoryAddress < 0 || memoryAddress >= NUMMEMORY) {
+                        System.err.println("ERROR: Invalid memory address");
+                        System.exit(1);
+                    }
+
+                    // Store the value from regB into memory at the calculated address
+                    state.mem[memoryAddress] = state.reg[regB];
+                    state.pc++;
+                    sum++;
+                }
+                case "100" -> { // beq
+                    // Extract the necessary values from the instruction
+                    regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
+
+                    regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
+
+                    offsetField = Integer.parseInt(binaryValue.substring(16, 32), 2);
+                    offsetField = convertNum(offsetField);
+
+
+                    // Check if regA and regB are equal
+                    if (state.reg[regA] == state.reg[regB]) {
+                        // Jump to the address PC + 1 + offsetField
+                        sum++;
+                        state.pc += (1 + offsetField);
+                    } else {
+                        // Increment the program counter
+                        sum++;
+                        state.pc++;
+                    }
+                }
+                case "101" -> { // jalr
+                    // Extract the necessary values from the instruction
+                    regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
+                    regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
+
+                    // Store the value PC + 1 in regB
+                    state.reg[regB] = state.pc + 1;
+
+                    if (regA == regB) {
+                        // If regA and regB are the same, store PC + 1 in regB first
+                        state.pc++;
+                    } else {
+                        // Jump to the address stored in regA
+                        state.pc = state.reg[regA];
+                    }
+                    sum++;
+                }
+                case "110" -> { // halt
+                    // Increment the program counter to move to the next instruction
+                    sum++;
+                    System.out.println("machine halted");
+                    System.out.println("total of " + sum + " instructions executed");
+                    System.out.println("final state of machine:");
+                    state.pc++;
+
+                    printState(state);
+                    return;
+                }
+                case "111" -> { // noop
+                    // Do nothing
+                    sum++;
+                }
+
+                default -> {
+                    // Handle unknown opcode
+                    System.err.println("ERROR: Memory at location " + state.pc + " illegible.");
+                    System.exit(1);
+                }
+            }
+
+        }
+
+
+
 //        try (BufferedReader fileReader = new BufferedReader(new FileReader(filename))) {
 //            String line;
 //            while ((line = fileReader.readLine()) != null) {
@@ -92,6 +248,14 @@ public class Main {
 //            System.out.println("\tmemory[" + i + "]=" + state.mem[i]);
 //        }
 //    }
+
+    // Define the convertNum function
+    static int convertNum(int num) {
+        if ((num & (1 << 15)) != 0) {
+            num -= (1 << 16);
+        }
+        return num;
+    }
 
     static int extractOpcode(String binaryValue) {
         // Shift right 22 bits and perform a bitwise AND with 0b111 to extract opcode.
