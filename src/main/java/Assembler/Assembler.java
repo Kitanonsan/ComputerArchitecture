@@ -196,9 +196,11 @@ public class Assembler {
                 binary.append("0000000000000000000000");
             }
             else if(instruction.get(i).matches(Format.Fill_format)){
+//                binary.delete(0,binary.length());
                 tkz.next();
                 tkz.next();
                 String number = tkz.next();
+                binary.delete(0,binary.length());
                 if(number.matches(Format.Label)){
                     number = hmLine.get(number).toString();
                 }
@@ -217,7 +219,7 @@ public class Assembler {
                 n = -1*n;
                 twoComplement = Integer.toBinaryString(((~n)+1));
                 str = new StringBuilder(twoComplement);
-                result =str.substring(str.length()-16,str.length());
+                result = str.substring(str.length()-16,str.length());
             }
             else {
                 twoComplement =  Integer.toBinaryString(n);
@@ -226,7 +228,6 @@ public class Assembler {
                 while(str.length() + extend.length() < 16){
                     extend.append("0");
                 }
-
                 result = extend.append(str).toString();
             }
             return result;
@@ -274,7 +275,14 @@ public class Assembler {
 
     private void BinarytoDecimal(){
         for(int  i = 0 ; i < machine_code.size(); i++){
-            System.out.println(Integer.parseInt(machine_code.get(i),2));
+            if(machine_code.get(i).length() == 32){
+                System.out.println(Integer.parseInt(machine_code.get(i),2));
+            }
+            else{
+                short labelValue = (short) Integer.parseInt(machine_code.get(i),2);
+                System.out.println(labelValue);
+            }
+
         }
     }
 }
