@@ -2,9 +2,12 @@ package Assembler;
 
 import Tokenizer.Format;
 import Tokenizer.Tokenizer;
-
 import java.io.*;
 import java.util.*;
+import Error.OffsetOutofRange;
+import Error.InvalidRegister;
+import Error.UndefineLabels;
+import Error.DuplicateLabel;
 
 public class Assembler {
     private HashMap<String,Integer> hashMap;
@@ -75,12 +78,12 @@ public class Assembler {
                                 hashMap.put(LabelMap,hmLine.get(s));
                             }
                             else{
-                                System.out.println("Don't know this label: " +s );
+                                throw new UndefineLabels(LabelMap);
                             }
                         }
                     }
                 }else{
-                    System.out.println("Same label at Line: " + i);
+                    throw new DuplicateLabel(LabelMap);
                 }
             }
         }
@@ -209,7 +212,7 @@ public class Assembler {
             machine_code.add(binary.toString());
         }
     }
-    private static String twoComplement(String number){
+    public static String twoComplement(String number){
         int n = Integer.parseInt(number);
         if(-32768 <= n && n <= 32767){
             String twoComplement;
@@ -233,13 +236,13 @@ public class Assembler {
             return result;
         }
         else{
-            throw new ArithmeticException("too many");
+            throw new OffsetOutofRange(number + " : The number must between –32768 to 32767");
         }
     }
 
     private static String regNumber(String number){
         if(Integer.parseInt(number) < 0 && Integer.parseInt(number) > 7)
-            System.out.println("");
+            throw new InvalidRegister("Invalid Register number : " + number);
         String s = "";
         switch (number){
             case"0":
