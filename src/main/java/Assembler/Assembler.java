@@ -238,6 +238,8 @@ public class Assembler {
     }
 
     private static String regNumber(String number){
+        if(Integer.parseInt(number) < 0 && Integer.parseInt(number) > 7)
+            System.out.println("");
         String s = "";
         switch (number){
             case"0":
