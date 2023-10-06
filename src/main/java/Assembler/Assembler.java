@@ -107,6 +107,7 @@ public class Assembler {
             instruction.set(i,data);
         }
     }
+
     public void printHashMap(){
         System.out.println(hashMap.keySet() + " -- " + hashMap.values());
         System.out.println(hmLine.keySet() + " -- " + hmLine.values());
@@ -212,6 +213,7 @@ public class Assembler {
             machine_code.add(binary.toString());
         }
     }
+
     public static String twoComplement(String number){
         int n = Integer.parseInt(number);
         if(-32768 <= n && n <= 32767){
