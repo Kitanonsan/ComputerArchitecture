@@ -71,10 +71,12 @@ public class Assembler {
                         s = tkz.nextToken();
                         hmLine.put(LabelMap,i);
                         if(s.matches(Format.Numeric)){
+                            hmLine.put(LabelMap,i);
                             hashMap.put(LabelMap,Integer.parseInt(s));
                         }
                         else if(s.matches(Format.Label)){
                             if(hmLine.containsKey(s)){
+                                hmLine.put(LabelMap,i);
                                 hashMap.put(LabelMap,hmLine.get(s));
                             }
                             else{
@@ -168,6 +170,8 @@ public class Assembler {
                     offsetField = Integer.toString(jumpValue);
                 }
                 else if(offsetField.matches(Format.Label) && (opcode.matches("lw|sw"))){
+                    if(!hmLine.containsKey(offsetField))
+                        throw new UndefineLabels("using undefine label : "+ offsetField);
                     offsetField = hmLine.get(offsetField).toString();
                 }
                 binary.append(regNumber(regA));
