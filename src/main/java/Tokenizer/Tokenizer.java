@@ -3,6 +3,7 @@ package Tokenizer;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
+import Error.UndefineOpcode;
 
 public class Tokenizer {
     private StringTokenizer tkz;
@@ -53,7 +54,7 @@ public class Tokenizer {
             }
         }
         else{
-            throw new IllegalArgumentException();
+            throw new UndefineOpcode(src + " : Undefine opcode.");
         }
 
     }

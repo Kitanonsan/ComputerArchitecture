@@ -1,4 +1,9 @@
 public class Execute {
+
+    public static void executeInstruction(Main.State state, String opcodeBinary, String binaryValue) {
+
+    }
+
     public static void main(String[] args) {
         Main.State state = new Main.State();
 
@@ -6,6 +11,7 @@ public class Execute {
         String binaryValue = "";
 
         while (state.pc < state.numMemory) {
+            System.out.println("start");
             Main.printState(state); // Print the state before executing each instruction
 
             int opcode = Main.extractOpcode(binaryValue);

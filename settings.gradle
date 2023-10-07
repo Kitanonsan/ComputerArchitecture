@@ -1,2 +1,4 @@
 rootProject.name = 'ComputerArchitecture'
+include 'src:main:Simulator'
+findProject(':src:main:Simulator')?.name = 'Simulator'
 

@@ -2,9 +2,12 @@ package Assembler;
 
 import Tokenizer.Format;
 import Tokenizer.Tokenizer;
-
 import java.io.*;
 import java.util.*;
+import Error.OffsetOutofRange;
+import Error.InvalidRegister;
+import Error.UndefineLabels;
+import Error.DuplicateLabel;
 
 public class Assembler {
     private HashMap<String,Integer> hashMap;
@@ -68,19 +71,21 @@ public class Assembler {
                         s = tkz.nextToken();
                         hmLine.put(LabelMap,i);
                         if(s.matches(Format.Numeric)){
+                            hmLine.put(LabelMap,i);
                             hashMap.put(LabelMap,Integer.parseInt(s));
                         }
                         else if(s.matches(Format.Label)){
                             if(hmLine.containsKey(s)){
+                                hmLine.put(LabelMap,i);
                                 hashMap.put(LabelMap,hmLine.get(s));
                             }
                             else{
-                                System.out.println("Don't know this label: " +s );
+                                throw new UndefineLabels(LabelMap);
                             }
                         }
                     }
                 }else{
-                    System.out.println("Same label at Line: " + i);
+                    throw new DuplicateLabel(LabelMap);
                 }
             }
         }
@@ -104,6 +109,7 @@ public class Assembler {
             instruction.set(i,data);
         }
     }
+
     public void printHashMap(){
         System.out.println(hashMap.keySet() + " -- " + hashMap.values());
         System.out.println(hmLine.keySet() + " -- " + hmLine.values());
@@ -164,6 +170,8 @@ public class Assembler {
                     offsetField = Integer.toString(jumpValue);
                 }
                 else if(offsetField.matches(Format.Label) && (opcode.matches("lw|sw"))){
+                    if(!hmLine.containsKey(offsetField))
+                        throw new UndefineLabels("using undefine label : "+ offsetField);
                     offsetField = hmLine.get(offsetField).toString();
                 }
                 binary.append(regNumber(regA));
@@ -196,9 +204,11 @@ public class Assembler {
                 binary.append("0000000000000000000000");
             }
             else if(instruction.get(i).matches(Format.Fill_format)){
+//                binary.delete(0,binary.length());
                 tkz.next();
                 tkz.next();
                 String number = tkz.next();
+                binary.delete(0,binary.length());
                 if(number.matches(Format.Label)){
                     number = hmLine.get(number).toString();
                 }
@@ -207,7 +217,8 @@ public class Assembler {
             machine_code.add(binary.toString());
         }
     }
-    private static String twoComplement(String number){
+
+    public static String twoComplement(String number){
         int n = Integer.parseInt(number);
         if(-32768 <= n && n <= 32767){
             String twoComplement;
@@ -217,7 +228,7 @@ public class Assembler {
                 n = -1*n;
                 twoComplement = Integer.toBinaryString(((~n)+1));
                 str = new StringBuilder(twoComplement);
-                result =str.substring(str.length()-16,str.length());
+                result = str.substring(str.length()-16,str.length());
             }
             else {
                 twoComplement =  Integer.toBinaryString(n);
@@ -226,17 +237,18 @@ public class Assembler {
                 while(str.length() + extend.length() < 16){
                     extend.append("0");
                 }
-
                 result = extend.append(str).toString();
             }
             return result;
         }
         else{
-            throw new ArithmeticException("too many");
+            throw new OffsetOutofRange(number + " : The number must between –32768 to 32767");
         }
     }
 
     private static String regNumber(String number){
+        if(Integer.parseInt(number) < 0 && Integer.parseInt(number) > 7)
+            throw new InvalidRegister("Invalid Register number : " + number);
         String s = "";
         switch (number){
             case"0":
@@ -274,7 +286,14 @@ public class Assembler {
 
     private void BinarytoDecimal(){
         for(int  i = 0 ; i < machine_code.size(); i++){
-            System.out.println(Integer.parseInt(machine_code.get(i),2));
+            if(machine_code.get(i).length() == 32){
+                System.out.println(Integer.parseInt(machine_code.get(i),2));
+            }
+            else{
+                short labelValue = (short) Integer.parseInt(machine_code.get(i),2);
+                System.out.println(labelValue);
+            }
+
         }
     }
 }
