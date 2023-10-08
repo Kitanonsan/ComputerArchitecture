@@ -15,7 +15,7 @@ public class Assembler {
     private List<String> instruction;
     private List<String> machine_code;
     public Assembler(){
-        File myObj = new File("src/Program/Program2.txt");
+        File myObj = new File("src/IOFile/Input.txt");
         Scanner myReader = null;
         try {
             myReader = new Scanner(myObj);
@@ -40,7 +40,7 @@ public class Assembler {
        printMachineCode();
        BinarytoDecimal();
        try {
-           File fileout = new File("DecimalCode.txt");
+           File fileout = new File("src/IOFile/output.txt");
            FileOutputStream fos = new FileOutputStream(fileout);
            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
            for(int  i = 0 ; i < machine_code.size(); i++){
@@ -54,7 +54,7 @@ public class Assembler {
        }
     }
 
-    private void LabelMapping(){
+    private void LabelMapping() throws UndefineLabels,DuplicateLabel{
         for(int i = 0 ; i< instruction.size();i++){
             String data = (String) instruction.get(i);
             StringTokenizer tkz =  new StringTokenizer(data);
@@ -62,7 +62,7 @@ public class Assembler {
             String LabelMap = s;
             if(s.matches(Format.Label) && tkz.hasMoreTokens()){
                 s = tkz.nextToken();
-                if(!hashMap.containsKey(LabelMap)){
+                if(!hmLine.containsKey(LabelMap)){
                     if(s.matches(Format.Opcode)){
                         //hashMap.put(LabelMap,i);
                         hmLine.put(LabelMap,i);
