@@ -15,7 +15,7 @@ public class Assembler {
     private List<String> instruction;
     private List<String> machine_code;
     public Assembler(){
-        File myObj = new File("src/Program/Program1.txt");
+        File myObj = new File("src/Program/Program2.txt");
         Scanner myReader = null;
         try {
             myReader = new Scanner(myObj);
