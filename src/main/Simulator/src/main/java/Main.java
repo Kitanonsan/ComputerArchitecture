@@ -212,42 +212,8 @@ public class Main {
             }
 
         }
-
-
-
-//        try (BufferedReader fileReader = new BufferedReader(new FileReader(filename))) {
-//            String line;
-//            while ((line = fileReader.readLine()) != null) {
-//                if (state.numMemory >= NUMMEMORY) {
-//                    System.err.println("error: memory is full");
-//                    System.exit(1);
-//                }
-//
-//                int decimalValue = Integer.parseInt(line);
-//                String binaryValue = toTwosComplementBinary(decimalValue);
-//                int opcode = extractOpcode(binaryValue);
-//                String opcodeBinary = String.format("%03d", Integer.parseInt(Integer.toBinaryString(opcode))); // Extend opcode to 3 bits
-//
-////                System.out.println("Opcode: " + opcodeBinary);
-//
-//
-//                state.mem[state.numMemory] = Integer.parseInt(binaryValue, 2);
-//                state.numMemory++;
-//            }
-//
-//        } catch (IOException e) {
-//            System.err.println("error: can't find file " + filename);
-//            e.printStackTrace();
-//            System.exit(1);
-//        }
     }
 
-//    static void printMemoryState(State state) {
-//        System.out.println("\nMemory state:");
-//        for (int i = 0; i < state.numMemory; i++) {
-//            System.out.println("\tmemory[" + i + "]=" + state.mem[i]);
-//        }
-//    }
 
     // Define the convertNum function
     static int convertNum(int num) {
@@ -279,23 +245,6 @@ public class Main {
         }
         return binary.toString();
 
-//        // For negative values, calculate two's complement
-//        StringBuilder complement = new StringBuilder();
-//        boolean foundOne = false;
-//
-//        for (int i = binary.length() - 1; i >= 0; i--) {
-//            char bit = binary.charAt(i);
-//            if (!foundOne) {
-//                complement.insert(0, bit);
-//            } else {
-//                complement.insert(0, bit == '0' ? '1' : '0');
-//            }
-//            if (bit == '1') {
-//                foundOne = true;
-//            }
-//        }
-//
-//        return complement.toString();
     }
 
 
