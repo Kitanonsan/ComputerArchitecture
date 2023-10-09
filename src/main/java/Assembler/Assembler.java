@@ -98,24 +98,6 @@ public class Assembler {
         //printHashMap();
     }
 
-    private void Loop2(){
-        for(int i = 0 ; i< instruction.size();i++){
-            String data = (String) instruction.get(i);
-            StringTokenizer tkz =  new StringTokenizer(data);
-            String s = tkz.nextToken();
-            while (tkz.hasMoreTokens()){
-               s = tkz.nextToken();
-            }
-            if(hashMap.containsKey(s)){
-               data =  data.replaceAll("\\b"+s+"\\b", String.valueOf(hashMap.get(s)));
-                System.out.println(data);
-            }else{
-                //System.out.println("Undefined index ["+i+"]");
-            }
-            instruction.set(i,data);
-        }
-    }
-
     public void printHashMap(){
         System.out.println(hashMap.keySet() + " -- " + hashMap.values());
         System.out.println(hmLine.keySet() + " -- " + hmLine.values());

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 import Error.UndefineOpcode;
+import Error.IncorrectFormat;
 
 public class Tokenizer {
     private StringTokenizer tkz;
@@ -13,6 +14,7 @@ public class Tokenizer {
         this.tokenize(src);
     }
     private void tokenize(String src){
+        //check format of input string
         if(FormatCheck(src)){
             tkz = new StringTokenizer(src);
             String s = tkz.nextToken();
@@ -52,18 +54,28 @@ public class Tokenizer {
                 String number = tkz.nextToken();
                 queue.add(number);
             }
+            else{
+                throw new UndefineOpcode(src + " : Undefine opcode.");
+            }
         }
+        //
         else{
-            throw new UndefineOpcode(src + " : Undefine opcode.");
+            throw new IncorrectFormat(src + " : Incorrect format.");
         }
 
     }
+
+    //check format of input string
     public static boolean FormatCheck(String s){
        return  s.matches(Format.Fill_format) || (s.matches(Format.InstructionFormat) && (s.matches(Format.R_format) || s.matches(Format.I_format) || s.matches(Format.J_format) || s.matches(Format.O_format)));
     }
+
+    //return next token of tokenizer
     public String next(){
         return queue.poll();
     }
+
+    //check if tokenizer is empty
     public boolean hasNext(){
         return !queue.isEmpty();
     }
