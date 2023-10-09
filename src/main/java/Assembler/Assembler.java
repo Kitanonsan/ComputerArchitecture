@@ -44,7 +44,13 @@ public class Assembler {
            FileOutputStream fos = new FileOutputStream(fileout);
            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
            for(int  i = 0 ; i < machine_code.size(); i++){
-               String Decimal = String.valueOf(Integer.parseInt(machine_code.get(i),2));
+               String Decimal = "";
+               if(machine_code.get(i).length() == 32){
+                   Decimal = String.valueOf(Integer.parseInt(machine_code.get(i),2));
+               }
+               else{
+                   Decimal = String.valueOf((short) Integer.parseInt(machine_code.get(i),2));
+               }
                writer.write(Decimal);
                writer.newLine();
            }
