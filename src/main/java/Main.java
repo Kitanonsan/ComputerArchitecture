@@ -1,13 +1,9 @@
 import Assembler.Assembler;
-import Tokenizer.Tokenizer;
-import Tokenizer.Format;
-import java.sql.SQLOutput;
-import java.util.*;
-import java.io.*;
-import Assembler.*;
+import Simulator.Simulator;
 
 public class Main {
     public static void main(String[] args) {
-            Assembler assembler = new Assembler();
+        new Assembler();
+        new Simulator();
     }
 }
