@@ -16,7 +16,7 @@ public class Tokenizer {
         if(FormatCheck(src)){
             tkz = new StringTokenizer(src);
             String s = tkz.nextToken();
-            if(s.matches(Format.Field) && !s.matches(Format.Opcode)){
+            if(s.matches(Format.Label) && !s.matches(Format.Opcode)){
                 queue.add(s);
                 s = tkz.nextToken();
             }
