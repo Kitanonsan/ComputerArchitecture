@@ -10,8 +10,8 @@ import Error.UndefineLabels;
 import Error.DuplicateLabel;
 
 public class Assembler {
-    private HashMap<String,Integer> hashMap;
-    private HashMap<String,Integer> hmLine;
+    private HashMap<String,Integer> LabelValue;
+    private HashMap<String,Integer> LabelLine;
     private List<String> instruction;
     private List<String> machine_code;
     public Assembler(){
@@ -32,13 +32,13 @@ public class Assembler {
             }
             instruction.add(strBuild.toString());
         }
-       hashMap = new HashMap();
-        hmLine = new HashMap();
+       LabelValue = new HashMap();
+        LabelLine = new HashMap();
        machine_code = new ArrayList<>();
        LabelMapping();
        MachineCode();
-       printMachineCode();
-       BinarytoDecimal();
+       printBinaryMachineCode();
+       printDecimalMachineCode();
        try {
            File fileout = new File("src/IOFile/output.txt");
            FileOutputStream fos = new FileOutputStream(fileout);
@@ -68,22 +68,22 @@ public class Assembler {
             String LabelMap = s;
             if(s.matches(Format.Label) && tkz.hasMoreTokens()){
                 s = tkz.nextToken();
-                if(!hmLine.containsKey(LabelMap)){
+                if(!LabelLine.containsKey(LabelMap)){
                     if(s.matches(Format.Opcode)){
                         //hashMap.put(LabelMap,i);
-                        hmLine.put(LabelMap,i);
+                        LabelLine.put(LabelMap,i);
                     }
                     if(s.matches(Format.Fill)){
                         s = tkz.nextToken();
-                        hmLine.put(LabelMap,i);
+                        LabelLine.put(LabelMap,i);
                         if(s.matches(Format.Numeric)){
-                            hmLine.put(LabelMap,i);
-                            hashMap.put(LabelMap,Integer.parseInt(s));
+                            LabelLine.put(LabelMap,i);
+                            LabelValue.put(LabelMap,Integer.parseInt(s));
                         }
                         else if(s.matches(Format.Label)){
-                            if(hmLine.containsKey(s)){
-                                hmLine.put(LabelMap,i);
-                                hashMap.put(LabelMap,hmLine.get(s));
+                            if(LabelLine.containsKey(s)){
+                                LabelLine.put(LabelMap,i);
+                                LabelValue.put(LabelMap, LabelLine.get(s));
                             }
                             else{
                                 throw new UndefineLabels(LabelMap);
@@ -98,12 +98,13 @@ public class Assembler {
         //printHashMap();
     }
 
-    public void printHashMap(){
-        System.out.println(hashMap.keySet() + " -- " + hashMap.values());
-        System.out.println(hmLine.keySet() + " -- " + hmLine.values());
+
+    private void printHashMap(){
+        System.out.println(LabelValue.keySet() + " -- " + LabelValue.values());
+        System.out.println(LabelLine.keySet() + " -- " + LabelLine.values());
     }
 
-    public void printInstruction(){
+    private void printInstruction(){
         System.out.println(instruction);
     }
 
@@ -149,18 +150,18 @@ public class Assembler {
                 String regB = tkz.next();
                 String offsetField = tkz.next();
                 if(offsetField.matches(Format.Label) && (opcode.matches("beq"))){
-                    if(hashMap.containsKey(offsetField)){
-                        offsetField = hashMap.get(offsetField).toString();
+                    if(LabelValue.containsKey(offsetField)){
+                        offsetField = LabelValue.get(offsetField).toString();
                     }else {
-                        offsetField = hmLine.get(offsetField).toString();
+                        offsetField = LabelLine.get(offsetField).toString();
                     }
                     int jumpValue = Integer.parseInt(offsetField)-(i+1);
                     offsetField = Integer.toString(jumpValue);
                 }
                 else if(offsetField.matches(Format.Label) && (opcode.matches("lw|sw"))){
-                    if(!hmLine.containsKey(offsetField))
+                    if(!LabelLine.containsKey(offsetField))
                         throw new UndefineLabels("using undefine label : "+ offsetField);
-                    offsetField = hmLine.get(offsetField).toString();
+                    offsetField = LabelLine.get(offsetField).toString();
                 }
                 binary.append(regNumber(regA));
                 binary.append(regNumber(regB));
@@ -192,13 +193,12 @@ public class Assembler {
                 binary.append("0000000000000000000000");
             }
             else if(instruction.get(i).matches(Format.Fill_format)){
-//                binary.delete(0,binary.length());
                 tkz.next();
                 tkz.next();
                 String number = tkz.next();
                 binary.delete(0,binary.length());
                 if(number.matches(Format.Label)){
-                    number = hmLine.get(number).toString();
+                    number = LabelLine.get(number).toString();
                 }
                 binary.append(twoComplement(number));
             }
@@ -206,6 +206,7 @@ public class Assembler {
         }
     }
 
+    //convert decimal number into Two's complement
     public static String twoComplement(String number){
         int n = Integer.parseInt(number);
         if(-32768 <= n && n <= 32767){
@@ -230,10 +231,12 @@ public class Assembler {
             return result;
         }
         else{
-            throw new OffsetOutofRange(number + " : The number must between –32768 to 32767");
+            throw new OffsetOutofRange(number + " : The number must between -32768 to 32767");
         }
     }
 
+    //require: number of register
+    //return: number of register in binary
     private static String regNumber(String number){
         if(Integer.parseInt(number) < 0 && Integer.parseInt(number) > 7)
             throw new InvalidRegister("Invalid Register number : " + number);
@@ -267,12 +270,14 @@ public class Assembler {
         return s;
     }
 
-    private void printMachineCode(){
+    //print machine code in binary
+    private void printBinaryMachineCode(){
         for(int i = 0 ; i < machine_code.size(); i++)
             System.out.println(machine_code.get(i));
     }
 
-    private void BinarytoDecimal(){
+    //print machine code in decimal
+    private void printDecimalMachineCode(){
         for(int  i = 0 ; i < machine_code.size(); i++){
             if(machine_code.get(i).length() == 32){
                 System.out.println(Integer.parseInt(machine_code.get(i),2));
