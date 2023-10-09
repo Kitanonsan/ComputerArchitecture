@@ -1,5 +1,4 @@
 package Assembler;
-
 import Tokenizer.Format;
 import Tokenizer.Tokenizer;
 import java.io.*;
