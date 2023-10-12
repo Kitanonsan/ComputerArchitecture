@@ -6,4 +6,5 @@ public class Main {
         new Assembler();
         new Simulator();
     }
+
 }
