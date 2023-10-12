@@ -17,7 +17,7 @@ ans add 0 2 7
 end halt
 negIn lw 0 7 zero
 beq 0 0 end
-input .fill 18
+input .fill 47
 zero .fill 0
 one .fill 1
 maxNe .fill -32768
