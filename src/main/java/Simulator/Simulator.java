@@ -6,9 +6,9 @@ import java.io.IOException;
 
 public class Simulator {
     private static final int NUMMEMORY = 65536; // maximum number of words in memory
-    private static final int NUMREGS = 8;      // number of machine registers
+    private static final int NUMREGS = 8; // number of machine registers
     private static final int MAXLINELENGTH = 1000;
-    private static final String filename = "src/IOFile/output.txt"; // Change this to your file's name
+    private static final String filename = "src/IOFile/output.txt"; //Change this to your file's name
 
     static class State {
         int pc;
@@ -36,24 +36,23 @@ public class Simulator {
                 }
 
                 int decimalValue = Integer.parseInt(line); // Parse as a decimal integer
-//                System.out.println(decimalValue);
-//                String binaryValue = toTwosComplementBinary(decimalValue);
-//                System.out.println("in main " + binaryValue);
-//
+                //System.out.println(decimalValue);
+                //String binaryValue = toTwosComplementBinary(decimalValue);
+                //System.out.println("in main " + binaryValue);
+
 
                 // Add the binaryValue to memory
-//                state.mem[state.numMemory] = Integer.parseInt(binaryValue, 2);
+                //state.mem[state.numMemory] = Integer.parseInt(binaryValue, 2);
                 state.mem[state.numMemory] = decimalValue;
                 state.numMemory++;
 
                 // Print the memory value
                 System.out.println("memory[" + (state.numMemory - 1) + "]=" + decimalValue);
             }
+                // Now that memory is initialized, you can display the memory state
+                //printMemoryState(state);
 
-            // Now that memory is initialized, you can display the memory state
-//            printMemoryState(state);
-
-            // Execute logic based on opcode (you can call Execute.executeInstruction here)
+              // Execute logic based on opcode (you can call Execute.executeInstruction here)
         } catch (IOException e) {
             System.err.println("error: can't find file " + filename);
             e.printStackTrace();
@@ -69,13 +68,13 @@ public class Simulator {
 
             // Fetch the current instruction from memory
             int intValue = state.mem[state.pc];
-//            System.out.println("\n"+intValue);
+            //System.out.println("\n"+intValue);
             String binaryValue = toTwosComplementBinary(intValue);
-//            System.out.println(binaryValue);
+            //System.out.println(binaryValue);
             int opcode = extractOpcode(binaryValue);
-//            System.out.println(opcode);
+            //System.out.println(opcode);
             String opcodeBinary = String.format("%03d", Integer.parseInt(Integer.toBinaryString(opcode)));
-//            System.out.println(opcodeBinary);
+            //System.out.println(opcodeBinary);
             int regA,regB,destReg,offsetField;
             int memoryAddress;
             switch (opcodeBinary) {
@@ -104,15 +103,11 @@ public class Simulator {
                     sum++;
                 }
                 case "010" -> { // lw
-                    // Extract the necessary values from the instruction
-
+                    // string cutting
                     regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
-
                     regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
-
                     offsetField = Integer.parseInt(binaryValue.substring(16, 32), 2);
                     offsetField = convertNum(offsetField);
-
 
                     // Calculate the memory address by adding offsetField to regA
                     memoryAddress = state.reg[regA] + offsetField;
@@ -132,12 +127,9 @@ public class Simulator {
                 case "011" -> { // sw
                     //string cutting
                     regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
-
                     regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
-
                     offsetField = Integer.parseInt(binaryValue.substring(16, 32), 2);
                     offsetField = convertNum(offsetField);
-
 
                     // Calculate the memory address by adding offsetField to regA
                     memoryAddress = state.reg[regA] + offsetField;
@@ -153,11 +145,9 @@ public class Simulator {
                     sum++;
                 }
                 case "100" -> { // beq
-                    // Extract the necessary values from the instruction
+                    // string cutting
                     regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
-
                     regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
-
                     offsetField = Integer.parseInt(binaryValue.substring(16, 32), 2);
                     offsetField = convertNum(offsetField);
 
@@ -174,7 +164,7 @@ public class Simulator {
                     }
                 }
                 case "101" -> { // jalr
-                    // Extract the necessary values from the instruction
+                    // string cutting
                     regA = Integer.parseInt(binaryValue.substring(10, 13), 2);
                     regB = Integer.parseInt(binaryValue.substring(13, 16), 2);
 
@@ -191,7 +181,7 @@ public class Simulator {
                     sum++;
                 }
                 case "110" -> { // halt
-                    // Increment the program counter to move to the next instruction
+                    // string cutting
                     sum++;
                     System.out.println("machine halted");
                     System.out.println("total of " + sum + " instructions executed");
