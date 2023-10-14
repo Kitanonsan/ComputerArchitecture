@@ -1,4 +1,5 @@
         lw 0 2 mcand
+        lw 0 1 3699999
         lw 0 3 mplier
         lw 0 4 one
         lw 0 5 maxV
@@ -13,13 +14,7 @@ incre   add 4 4 4
 mul     add 1 7 1
         beq 0 0 incre
 end     halt
-mcand .fill 32766
-mplier .fill 10383
+mcand .fill 100
+mplier .fill 100
 one .fill 1
 maxV .fill 65536
-
-
-
-
-
-

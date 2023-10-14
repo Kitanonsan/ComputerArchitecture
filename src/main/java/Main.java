@@ -9,7 +9,8 @@ public class Main {
             new Simulator();
         }
         catch (Error e){
-            throw e;
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
     }
 

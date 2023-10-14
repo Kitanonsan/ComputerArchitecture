@@ -26,7 +26,7 @@ public class Assembler {
             throw new RuntimeException(e);
         }
         instruction = new ArrayList<String>();
-        int line = 0;
+        int line = 1;
         boolean end = false;
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
@@ -89,12 +89,12 @@ public class Assembler {
                                 LabelLine.put(LabelMap, i);
                                 LabelValue.put(LabelMap, LabelLine.get(s));
                             } else {
-                                throw new UndefineLabels("line " + i + " | error : undefined label | " + LabelMap);
+                                throw new UndefineLabels("line " + (i+1) + " | error : undefined label | " + LabelMap);
                             }
                         }
                     }
                 } else {
-                    throw new DuplicateLabel("line " + i + " | error : duplicated labels | "+ LabelMap);
+                    throw new DuplicateLabel("line " + (i+1) + " | error : duplicated labels | "+ LabelMap);
                 }
             }
         }
@@ -150,7 +150,7 @@ public class Assembler {
                 String offsetField = tkz.next();
                 if (offsetField.matches(Format.Label) && (opcode.matches("beq"))) {
                     if (!LabelLine.containsKey(offsetField))
-                        throw new UndefineLabels("line " + i + " | error : undefined label | " + offsetField);
+                        throw new UndefineLabels("line " + (i+1) + " | error : undefined label | " + offsetField);
                     if (LabelValue.containsKey(offsetField)) {
                         offsetField = LabelValue.get(offsetField).toString();
                     } else {
@@ -160,12 +160,12 @@ public class Assembler {
                     offsetField = Integer.toString(jumpValue);
                 } else if (offsetField.matches(Format.Label) && (opcode.matches("lw|sw"))) {
                     if (!LabelLine.containsKey(offsetField))
-                        throw new UndefineLabels("line " + i + " | error : undefined label | " + offsetField);
+                        throw new UndefineLabels("line " + (i+1) + " | error : undefined label | " + offsetField);
                     offsetField = LabelLine.get(offsetField).toString();
                 }
                 binary.append(regNumber(regA));
                 binary.append(regNumber(regB));
-                binary.append(twoComplement(offsetField));
+                binary.append(twoComplement(offsetField,i+1));
             } else if (instruction.get(i).matches(Format.J_format)) {
                 String opcode = tkz.next();
                 if (opcode.matches(Format.Label) && !opcode.matches(Format.Opcode)) {
@@ -203,7 +203,7 @@ public class Assembler {
     }
 
     //convert decimal number into Two's complement
-    public static String twoComplement(String number) {
+    public static String twoComplement(String number,int line) {
         int n = Integer.parseInt(number);
         if (-32768 <= n && n <= 32767) {
             String twoComplement;
@@ -225,7 +225,7 @@ public class Assembler {
             }
             return result;
         } else {
-            throw new OffsetOutofRange(number + " : The number must between -32768 to 32767");
+            throw new OffsetOutofRange( "line "+  line +" | error : offset out of range (must between -32768 to 32767) | " + number);
         }
     }
 
