@@ -8,7 +8,7 @@ public class Simulator {
     private static final int NUMMEMORY = 65536; // maximum number of words in memory
     private static final int NUMREGS = 8; // number of machine registers
     private static final int MAXLINELENGTH = 1000;
-    private static final String filename = "src/IOFile/output.txt"; //Change this to your file's name
+    private static final String filename = "src/IOFile/Machine-code.txt"; //Change this to your file's name
 
     static class State {
         int pc;

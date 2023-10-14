@@ -18,7 +18,7 @@ public class Assembler {
     private List<String> machine_code;
 
     public Assembler() {
-        File myObj = new File("src/IOFile/Input.txt");
+        File myObj = new File("src/IOFile/Assembly-program.txt");
         Scanner myReader = null;
         try {
             myReader = new Scanner(myObj);
@@ -43,7 +43,7 @@ public class Assembler {
         printBinaryMachineCode();
         printDecimalMachineCode();
         try {
-            File fileout = new File("src/IOFile/output.txt");
+            File fileout = new File("src/IOFile/Machine-code.txt");
             FileOutputStream fos = new FileOutputStream(fileout);
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
             for (int i = 0; i < machine_code.size(); i++) {
