@@ -1,23 +1,23 @@
-lw 0 1 input // int n = input
-lw 0 2 zero // int front = 0
-lw 0 3 one // int back = 1
-lw 0 4 zero // int i = 0
-lw 0 5 maxNe
-nand 1 5 6
-nand 6 6 6
-beq 5 6 negIn
-Loop beq 4 1 ans
-add 0 3 6
-add 3 2 3
-add 0 6 2
-lw 0 6 one
-add 4 6 4
-beq 0 0 Loop
-ans add 0 2 7
-end halt
+        lw 0 1 input
+        lw 0 2 zero
+        lw 0 3 one
+        lw 0 4 zero
+        lw 0 5 maxNe
+        nand 1 5 6
+        nand 6 6 6
+        beq 5 6 negIn
+Loop    beq 4 1 ans
+        add 0 3 6
+        add 3 2 3
+        add 0 6 2
+        lw 0 6 one
+        add 4 6 4
+        beq 0 0 Loop
+ans     add 0 2 7
+end     halt
 negIn lw 0 7 zero
 beq 0 0 end
-input .fill 45
+input .fill -1000000
 zero .fill 0
 one .fill 1
-maxNe .fill -32768
+maxNe .fill -2147483648

@@ -26,14 +26,16 @@ public class Assembler {
             throw new RuntimeException(e);
         }
         instruction = new ArrayList<String>();
+        int line = 0;
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
             StringBuilder strBuild = new StringBuilder();
-            Tokenizer tkz = new Tokenizer(data);
+            Tokenizer tkz = new Tokenizer(data,line);
             while (tkz.hasNext()) {
                 strBuild.append(tkz.next() + " ");
             }
             instruction.add(strBuild.toString());
+            line++;
         }
         LabelValue = new HashMap();
         LabelLine = new HashMap();
@@ -81,12 +83,12 @@ public class Assembler {
                                 LabelLine.put(LabelMap, i);
                                 LabelValue.put(LabelMap, LabelLine.get(s));
                             } else {
-                                throw new UndefineLabels(LabelMap);
+                                throw new UndefineLabels("line " + i + " | error : undefined label | " + LabelMap);
                             }
                         }
                     }
                 } else {
-                    throw new DuplicateLabel(LabelMap);
+                    throw new DuplicateLabel("line " + i + " | error : duplicated labels | "+ LabelMap);
                 }
             }
         }
@@ -105,7 +107,7 @@ public class Assembler {
 
     private void MachineCode() {
         for (int i = 0; i < instruction.size(); i++) {
-            Tokenizer tkz = new Tokenizer(instruction.get(i));
+            Tokenizer tkz = new Tokenizer(instruction.get(i),i);
             StringBuilder binary = new StringBuilder();
             binary.append("0000000");
             if (instruction.get(i).matches(Format.R_format)) {
@@ -141,6 +143,8 @@ public class Assembler {
                 String regB = tkz.next();
                 String offsetField = tkz.next();
                 if (offsetField.matches(Format.Label) && (opcode.matches("beq"))) {
+                    if (!LabelLine.containsKey(offsetField))
+                        throw new UndefineLabels("line " + i + " | error : undefined label | " + offsetField);
                     if (LabelValue.containsKey(offsetField)) {
                         offsetField = LabelValue.get(offsetField).toString();
                     } else {
@@ -150,7 +154,7 @@ public class Assembler {
                     offsetField = Integer.toString(jumpValue);
                 } else if (offsetField.matches(Format.Label) && (opcode.matches("lw|sw"))) {
                     if (!LabelLine.containsKey(offsetField))
-                        throw new UndefineLabels("using undefine label : " + offsetField);
+                        throw new UndefineLabels("line " + i + " | error : undefined label | " + offsetField);
                     offsetField = LabelLine.get(offsetField).toString();
                 }
                 binary.append(regNumber(regA));

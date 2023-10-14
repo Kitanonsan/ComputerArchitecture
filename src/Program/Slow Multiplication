@@ -1,28 +1,28 @@
-lw 0 1 mcand // int mcand
-lw 0 2 mul //int mul
-lw 0 3 mul //int i = mul
-lw 0 4 maxNe
-lw 0 6 neg1
-nand 3 4 5
-nand 5 5 5
-beq 5 4 iConv //convert i = non negative number
-Mul beq 3 0 negCV //if i == 0 jump to end
-add 7 1 7 //product = product + mcand
-add 3 6 3 //i--
-beq 0 0 Mul //back to check for loop condition
-negCV lw 0 4 maxNe
-beq 5 4 convP
-end halt //end program
-iConv nand 3 3 3
-lw 0 4 one
-add 3 4 3
-beq 0 0 Mul
-convP nand 7 7 7
-lw 0 4 one
-add 7 4 7
-beq 0 0 end
+        lw 0 1 mcand
+        lw 0 2 mul
+        lw 0 3 mul
+        lw 0 4 maxNe
+        lw 0 6 neg1
+        nand 3 4 5
+        nand 5 5 5
+        beq 5 4 iConv
+Mul     beq 3 0 negCV
+        add 7 1 7
+        add 3 6 3
+        beq 0 0 Mul
+negCV   lw 0 4 maxNe
+        beq 5 4 convP
+end     halt
+iConv   nand 3 3 3
+        lw 0 4 one
+        add 3 4 3
+        beq 0 0 Mul
+convP   nand 7 7 7
+        lw 0 4 one
+        add 7 4 7
+        beq 0 0 end
 one .fill 1
 mcand .fill 32766
 mul .fill 10383
-maxNe .fill -32768
+maxNe .fill -2147483648
 neg1 .fill -1
