@@ -35,24 +35,19 @@ public class Simulator {
                     System.exit(1);
                 }
 
-                int decimalValue = Integer.parseInt(line); // Parse as a decimal integer
-                //System.out.println(decimalValue);
-                //String binaryValue = toTwosComplementBinary(decimalValue);
-                //System.out.println("in main " + binaryValue);
-
+                // Parse as a decimal integer
+                int decimalValue = Integer.parseInt(line);
 
                 // Add the binaryValue to memory
-                //state.mem[state.numMemory] = Integer.parseInt(binaryValue, 2);
                 state.mem[state.numMemory] = decimalValue;
                 state.numMemory++;
 
                 // Print the memory value
                 System.out.println("memory[" + (state.numMemory - 1) + "]=" + decimalValue);
             }
-                // Now that memory is initialized, you can display the memory state
-                //printMemoryState(state);
 
-              // Execute logic based on opcode (you can call Execute.executeInstruction here)
+
+            // Execute logic based on opcode (you can call Execute.executeInstruction here)
         } catch (IOException e) {
             System.err.println("error: can't find file " + filename);
             e.printStackTrace();
@@ -68,13 +63,9 @@ public class Simulator {
 
             // Fetch the current instruction from memory
             int intValue = state.mem[state.pc];
-            //System.out.println("\n"+intValue);
             String binaryValue = toTwosComplementBinary(intValue);
-            //System.out.println(binaryValue);
             int opcode = extractOpcode(binaryValue);
-            //System.out.println(opcode);
             String opcodeBinary = String.format("%03d", Integer.parseInt(Integer.toBinaryString(opcode)));
-            //System.out.println(opcodeBinary);
             int regA,regB,destReg,offsetField;
             int memoryAddress;
             switch (opcodeBinary) {
@@ -141,6 +132,7 @@ public class Simulator {
 
                     // Store the value from regB into memory at the calculated address
                     state.mem[memoryAddress] = state.reg[regB];
+                    // Increment the program counter
                     state.pc++;
                     sum++;
                 }
@@ -160,6 +152,7 @@ public class Simulator {
                     } else {
                         // Increment the program counter
                         sum++;
+                        // Increment the program counter
                         state.pc++;
                     }
                 }
@@ -222,7 +215,7 @@ public class Simulator {
 
     static String toTwosComplementBinary(int value) {
         StringBuilder binary = new StringBuilder(Integer.toBinaryString(value));
-//        System.out.println("in 2's complement " + binary);
+        //System.out.println("in 2's complement " + binary);
         int length = binary.length();
 
         // Pad with leading 0s to get a fixed-length representation
@@ -238,8 +231,6 @@ public class Simulator {
         return binary.toString();
 
     }
-
-
 
     static void printState(State state) {
         System.out.println("\n@@@\nstate:");
