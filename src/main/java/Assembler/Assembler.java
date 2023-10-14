@@ -27,15 +27,21 @@ public class Assembler {
         }
         instruction = new ArrayList<String>();
         int line = 0;
+        boolean end = false;
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
             if(!data.matches("\s*")){
-                StringBuilder strBuild = new StringBuilder();
-                Tokenizer tkz = new Tokenizer(data,line);
-                while (tkz.hasNext()) {
-                    strBuild.append(tkz.next() + " ");
+                if(!end){
+                    StringBuilder strBuild = new StringBuilder();
+                    Tokenizer tkz = new Tokenizer(data,line);
+                    while (tkz.hasNext()) {
+                        strBuild.append(tkz.next() + " ");
+                    }
+                    instruction.add(strBuild.toString());
                 }
-                instruction.add(strBuild.toString());
+            }
+            else{
+                end = true;
             }
             line++;
         }
@@ -44,8 +50,6 @@ public class Assembler {
         machine_code = new ArrayList<>();
         LabelMapping();
         MachineCode();
-        printBinaryMachineCode();
-        printDecimalMachineCode();
         try {
             File fileout = new File("src/IOFile/Machine-code.txt");
             FileOutputStream fos = new FileOutputStream(fileout);
