@@ -29,12 +29,14 @@ public class Assembler {
         int line = 0;
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
-            StringBuilder strBuild = new StringBuilder();
-            Tokenizer tkz = new Tokenizer(data,line);
-            while (tkz.hasNext()) {
-                strBuild.append(tkz.next() + " ");
+            if(!data.matches("\s*")){
+                StringBuilder strBuild = new StringBuilder();
+                Tokenizer tkz = new Tokenizer(data,line);
+                while (tkz.hasNext()) {
+                    strBuild.append(tkz.next() + " ");
+                }
+                instruction.add(strBuild.toString());
             }
-            instruction.add(strBuild.toString());
             line++;
         }
         LabelValue = new HashMap();
