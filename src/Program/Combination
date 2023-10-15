@@ -24,7 +24,7 @@ combi   beq 2 0 base    // if r == 0 jump to base case
         add 2 6 2       // r = r-1
         lw 0 6 cAddr    // load combination address
         jalr 6 7        // jump to combination ( now calculate combination(n-1,r-1) )
-        add 3 4 3       // temp = temp + combination(n-1,r-1) ( now temp = combination(n-1,r) + combination(n-1,r-1) )
+        add 3 4 3       // return = combination(n-1,r) + combination(n-1,r-1)
         lw 0 6 neg1     // load -1 to $6
         add 5 6 5       // decrease stack pointer
         lw 5 4 stack    // load temp from stack to $4
