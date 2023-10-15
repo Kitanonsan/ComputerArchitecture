@@ -1,26 +1,26 @@
-        lw 0 1 mcand
-        lw 0 2 mul
-        lw 0 3 mul
-        lw 0 4 maxNe
-        lw 0 6 neg1
-        nand 3 4 5
-        nand 5 5 5
-        beq 5 4 iConv
-Mul     beq 3 0 negCV
-        add 7 1 7
-        add 3 6 3
-        beq 0 0 Mul
-negCV   lw 0 4 maxNe
-        beq 5 4 convP
-end     halt
-iConv   nand 3 3 3
-        lw 0 4 one
-        add 3 4 3
-        beq 0 0 Mul
-convP   nand 7 7 7
-        lw 0 4 one
-        add 7 4 7
-        beq 0 0 end
+        lw 0 1 mcand        // load mcand to $1
+        lw 0 2 mul          // load mul to $2
+        lw 0 3 mul          // load mul to $3
+        lw 0 4 maxNe        // load maxNe to $4
+        lw 0 6 neg1         // load neg1 to $6
+        nand 3 4 5          // check if input is negative number
+        nand 5 5 5          // check if input is negative number
+        beq 5 4 iConv       // if Negative number go to iConv
+Mul     beq 3 0 negCV       // if(mul = 0) go to negCV
+        add 7 1 7           // product = product + mcand ($7 is product)
+        add 3 6 3           // mul = mul - 1
+        beq 0 0 Mul         // go back to Mul
+negCV   lw 0 4 maxNe        // load maxNe to $4
+        beq 5 4 convP       // if negative number go to convP
+end     halt                // end program
+iConv   nand 3 3 3          // change mul to not mul (~mul)
+        lw 0 4 one          // load 1 to $4
+        add 3 4 3           // two complement mul in $3 = ~mul + 1
+        beq 0 0 Mul         // go back to Mul
+convP   nand 7 7 7          // ($7 is product) make ~product
+        lw 0 4 one          // load 1 to $4
+        add 7 4 7           // product = ~product + 1
+        beq 0 0 end         // go back to end
 one .fill 1
 mcand .fill 32766
 mul .fill 10383
