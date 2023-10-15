@@ -1,23 +1,23 @@
-        lw 0 1 input
-        lw 0 2 zero
-        lw 0 3 one
-        lw 0 4 zero
-        lw 0 5 maxNe
-        nand 1 5 6
-        nand 6 6 6
-        beq 5 6 negIn
-Loop    beq 4 1 ans
-        add 0 3 6
-        add 3 2 3
-        add 0 6 2
-        lw 0 6 one
-        add 4 6 4
-        beq 0 0 Loop
-ans     add 0 2 7
-end     halt
+        lw 0 1 input    // load input to $1
+        lw 0 2 zero     // load zero to $2 (front initial)
+        lw 0 3 one      // load 1 to $3 (back initial)
+        lw 0 4 zero     // load 0 to $3 (index i )
+        lw 0 5 maxNeg   // load Most negative to $5
+        nand 1 5 6      // check if input is negative number
+        nand 6 6 6      // check if input is negative number
+        beq 5 6 negIn   // if input is negative number, return 0
+Loop    beq 4 1 ans     // for ( i = 0 to input(n) )
+        add 0 3 6       // temp = back
+        add 3 2 3       // back = back + front
+        add 0 6 2       // front = temp (old back)
+        lw 0 6 one      // load 1 to $6
+        add 4 6 4       // i++
+        beq 0 0 Loop    // jump to check for loop condition
+ans     add 0 2 7       // $7 = front (answer)
+end     halt            // end of program
 negIn lw 0 7 zero
 beq 0 0 end
 input .fill -1000000
 zero .fill 0
 one .fill 1
-maxNe .fill -2147483648
+maxNeg .fill -2147483648
