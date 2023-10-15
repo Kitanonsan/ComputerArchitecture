@@ -1,42 +1,42 @@
-        lw 0 1 n
-        lw 0 2 r
-        lw 0 6 cAddr
-        jalr 6 7
-        halt
-combi   beq 2 0 base
-        beq 1 2 base
-        lw 0 6 one
-        sw 5 7 stack
-        add 5 6 5
-        sw 5 1 stack
-        add 5 6 5
-        sw 5 2 stack
-        add 5 6 5
-        sw 5 4 stack
-        add 5 6 5
-        add 0 0 4
-        lw 0 6 neg1
-        add 1 6 1
-        lw 0 6 cAddr
-        jalr 6 7
-        add 4 3 4
-        lw 0 6 neg1
-        add 2 6 2
-        lw 0 6 cAddr
-        jalr 6 7
-        add 3 4 3
-        lw 0 6 neg1
-        add 5 6 5
-        lw 5 4 stack
-        add 5 6 5
-        lw 5 2 stack
-        add 5 6 5
-        lw 5 1 stack
-        add 5 6 5
-        lw 5 7 stack
-        jalr 7 6
-base    lw 0 3 one
-        jalr 7 6
+        lw 0 1 n        // load n to $1
+        lw 0 2 r        // load r to $2
+        lw 0 6 cAddr    // load combination address to $6
+        jalr 6 7        // jump to combination function
+        halt            // end of program
+combi   beq 2 0 base    // if r == 0 jump to base case
+        beq 1 2 base    // if n == r jump to base case
+        lw 0 6 one      // load 1 to $6 for increase stack pointer
+        sw 5 7 stack    // store $7 (return address of caller) to stack
+        add 5 6 5       // increment stack pointer
+        sw 5 1 stack    // store $1 (n) to stack
+        add 5 6 5       // increment stack pointer
+        sw 5 2 stack    // store $2 (r) to stack
+        add 5 6 5       // increment stack pointer
+        sw 5 4 stack    // store $4 ( temp = temp + combination(n-1,r) ) to stack
+        add 5 6 5       // increment stack pointer
+        add 0 0 4       //  clear temporary register for calculate ( combination(n-1,r) )
+        lw 0 6 neg1     // load -1 to $6
+        add 1 6 1       // n = n-1
+        lw 0 6 cAddr    // load combination address
+        jalr 6 7        // jump to combination ( now calculate combination(n-1,r) )
+        add 4 3 4       // temp = temp + combination(n-1,r)
+        lw 0 6 neg1     // load -1 to $6
+        add 2 6 2       // r = r-1
+        lw 0 6 cAddr    // load combination address
+        jalr 6 7        // jump to combination ( now calculate combination(n-1,r-1) )
+        add 3 4 3       // temp = temp + combination(n-1,r-1) ( now temp = combination(n-1,r) + combination(n-1,r-1) )
+        lw 0 6 neg1     // load -1 to $6
+        add 5 6 5       // decrease stack pointer
+        lw 5 4 stack    // load temp from stack to $4
+        add 5 6 5       // decrease stack pointer
+        lw 5 2 stack    // load r to $2
+        add 5 6 5       // decrease stack pointer
+        lw 5 1 stack    // load n to $1
+        add 5 6 5       // decrease stack pointer
+        lw 5 7 stack    // load return of caller
+        jalr 7 6        // jump to caller
+base    lw 0 3 one      //assign 1 to $3
+        jalr 7 6        //jump to caller
 n .fill 7
 r .fill 3
 one .fill 1
