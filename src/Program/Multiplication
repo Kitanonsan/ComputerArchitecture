@@ -1,0 +1,19 @@
+        lw 0 2 mcand        // load mcand address to $2
+        lw 0 3 mplier       // load mplier address to $3
+        lw 0 4 one          // load 1 to $4
+        lw 0 5 maxV         // load maxV(maximum value) to $5
+        add 0 2 7           // copy mcand to $7
+loop    beq 4 5 end         // for( 1 = maxV) if true go to end
+        nand 4 3 6          // check if input is negative number
+        nand 6 6 6          // check if input is negative number
+        beq 6 4 mul         // if input is negative number, return 0
+incre   add 4 4 4           // shiftlookup = shiftlookup + shiftlookup ($4 is shiftlookup)
+        add 7 7 7           // mcand = mcand + mcand
+        beq 0 0 loop        // go back to for loop
+mul     add 1 7 1           // temp = mcand + temp
+        beq 0 0 incre       // go back to incre
+end     halt                // end program
+mcand .fill 32766
+mplier .fill 10383
+one .fill 1
+maxV .fill 65536
