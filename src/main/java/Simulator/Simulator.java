@@ -7,7 +7,6 @@ import java.io.IOException;
 public class Simulator {
     private static final int NUMMEMORY = 65536; //Maximum number of words in memory
     private static final int NUMREGS = 8; //number of machine registers
-    private static final int MAXLINELENGTH = 1000; //Max Line of program
     private static final String filename = "src/IOFile/Machine-code.txt"; //File receive from Assembler (Machine-Code)
 
     static class State {
@@ -58,6 +57,7 @@ public class Simulator {
 
         int sum=0;
         while (true) {
+
             //Print the current state before executing each instruction
             printState(state);
 
@@ -144,17 +144,27 @@ public class Simulator {
                     offsetField = Integer.parseInt(binaryValue.substring(16, 32), 2);
                     offsetField = convertNum(offsetField);
 
+                    // Calculate the new address
+                    int newAddress = state.pc + 1 + offsetField;
 
-                    // Check regA and regB is equal?
-                    if (state.reg[regA] == state.reg[regB]) {
-                        //Jump to the address PC + 1 + offsetField
-                        sum++;
-                        state.pc += (1 + offsetField);
+                    // Check if the new address is non-negative and within valid memory range
+                    if (newAddress >= 0 && newAddress < NUMMEMORY) {
+                        // Check regA and regB is equal?
+                        if (state.reg[regA] == state.reg[regB]) {
+                            //Jump to the address PC + 1 + offsetField
+                            sum++;
+                            state.pc = newAddress;
+                        } else {
+                            //program counter Increase
+                            state.pc++;
+                            sum++;
+                        }
                     } else {
-                        //program counter Increase
-                        state.pc++;
-                        sum++;
+                        // Handle error: Print an error message and exit
+                        System.err.println("ERROR: Invalid memory address in branch equal operation");
+                        System.exit(1);
                     }
+
                 }
                 case "101" -> { // jump and link return
                     //Separate register  position
@@ -164,14 +174,23 @@ public class Simulator {
                     //Store value PC + 1 to regB
                     state.reg[regB] = state.pc + 1;
 
-                    //If regA and regB equal, store PC + 1 in regB
-                    if (regA == regB) {
-                        state.pc++;
+
+                    // Check if the new address is non-negative and within valid memory range
+                    if (state.reg[regA] >= 0 && state.reg[regA] < NUMMEMORY) {
+                        //If regA and regB equal, store PC + 1 in regB
+                        if (regA == regB) {
+                            state.pc++;
+                        } else {
+                            //Jump to address that stored in regA
+                            state.pc = state.reg[regA];
+                        }
+                        sum++;
                     } else {
-                        //Jump to address that stored in regA
-                        state.pc = state.reg[regA];
+                        // Handle error: Print an error message and exit
+                        System.err.println("ERROR: Invalid memory address in jump and link return operation");
+                        System.exit(1);
                     }
-                    sum++;
+
                 }
                 case "110" -> { // halt end of program
                     //stop program
